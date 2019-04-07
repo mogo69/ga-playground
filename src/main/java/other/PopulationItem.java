@@ -2,14 +2,14 @@ package other;
 
 public class PopulationItem {
 	
-	double genothype; //encoded chromosome
-	double phenotype; //decoded chromosome
-	double fitness;
-	double probability;
-	double expectedNumberOfItems;
-	double realNumberOfItems;
+	private String[] genothype; //encoded chromosome
+	private double[] phenotype; //decoded chromosome
+	private double fitness;
+	private double probability;
+	private double expectedNumberOfItems;
+	private double realNumberOfItems;
 	
-	public PopulationItem(double genothype, double phenotype, double fitness,
+	public PopulationItem(String[] genothype, double[] phenotype, double fitness,
 			double probability, double expectedNumberOfItems,
 			double realNumberOfItems) {
 		
@@ -21,11 +21,11 @@ public class PopulationItem {
 		this.realNumberOfItems = realNumberOfItems;
 	}
 
-	public double getGenothype() {
+	public String[] getGenothype() {
 		return genothype;
 	}
 
-	public double getPhenotype() {
+	public double[] getPhenotype() {
 		return phenotype;
 	}
 
@@ -45,9 +45,33 @@ public class PopulationItem {
 		return realNumberOfItems;
 	}
 	
+	private String genothypeToString(String[] gen) {
+		String s = "";
+		
+		for(int i = 0; i < gen.length; i++) {
+			s += gen[i]+" ";
+		}
+		
+		return s;
+	}
+	
+	private String phenothypeToString(double[] phen) {
+		String s = "";
+		
+		for(int i = 0; i < phen.length; i++) {
+			s += phen[i]+" ";
+		}
+		
+		return s;
+	}
+	
 	public String toString() {
-		String s = getGenothype()+" "+getPhenotype()+" "+getFitness()+" "+getProbability()+" "+
-	" "+getExpectedNumberOfItems()+" "+getRealNumberOfItems();
+		String s = "Genothype: ["+genothypeToString(getGenothype())+"] \n"+
+				"Phenotype: ["+phenothypeToString(getPhenotype())+"] \n"+
+				"Fitness: "+getFitness()+"\n"+
+				"Probability: "+getProbability()+"\n"+
+				"Expected number: "+getExpectedNumberOfItems()+"\n"+
+				"Real number: "+getRealNumberOfItems();
 		
 		return s;
 	}

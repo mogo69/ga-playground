@@ -3,7 +3,7 @@ package functions;
 public class Deba1 implements Function {
 	
 	//Calculating result of functoin F15(Deba1)
-	//xVals - array of arguments for function, which length depends on the dimension
+	//xVals - array of arguments for function, which length depends on the dimension (chromosome)
 	public double calculateResult(double[] xVals) {
 		double res = 0;
 		
@@ -11,7 +11,19 @@ public class Deba1 implements Function {
 			res = res + Math.pow(Math.sin(5 * Math.PI + xVals[i]), 6);
 		}
 		
-		return (double) (1 / xVals.length) * res;
+		double temp = (double) 1 / xVals.length;
+		
+		return temp * res;
+	}
+
+	public double getStartValue() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public double getEndValue() {
+		// TODO Auto-generated method stub
+		return 1;
 	}
 
 }
