@@ -1,6 +1,6 @@
 package other;
 
-public class PopulationItem {
+public class PopulationItem implements Comparable<PopulationItem> {
 	
 	private String[] genothype; //encoded chromosome
 	private double[] phenotype; //decoded chromosome
@@ -18,6 +18,33 @@ public class PopulationItem {
 		this.fitness = fitness;
 		this.probability = probability;
 		this.expectedNumberOfItems = expectedNumberOfItems;
+		this.realNumberOfItems = realNumberOfItems;
+	}
+	
+	public PopulationItem() {
+	}
+
+	public void setGenothype(String[] genothype) {
+		this.genothype = genothype;
+	}
+
+	public void setPhenotype(double[] phenotype) {
+		this.phenotype = phenotype;
+	}
+
+	public void setFitness(double fitness) {
+		this.fitness = fitness;
+	}
+
+	public void setProbability(double probability) {
+		this.probability = probability;
+	}
+
+	public void setExpectedNumberOfItems(double expectedNumberOfItems) {
+		this.expectedNumberOfItems = expectedNumberOfItems;
+	}
+
+	public void setRealNumberOfItems(double realNumberOfItems) {
 		this.realNumberOfItems = realNumberOfItems;
 	}
 
@@ -74,6 +101,12 @@ public class PopulationItem {
 				"Real number: "+getRealNumberOfItems();
 		
 		return s;
+	}
+
+	public int compareTo(PopulationItem that) {
+		if(this.getFitness() > that.getFitness()) return 1;
+		if(this.getFitness() < that.getFitness()) return -1;
+		return 0;
 	}
 
 }
