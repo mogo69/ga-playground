@@ -1,9 +1,13 @@
 package algorithm_iterations;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import other.ChromosomeDecoder;
 import other.ChromosomeGenerator;
+import other.ExecutionResultSaver;
 import other.PopulationItem;
 import functions.Deba1;
 import functions.Function;
@@ -12,7 +16,7 @@ import functions.TestFunction;
 public class SUS {
 	
 	private int populationSize = 500;
-	private int dimension = 3;
+	private int dimension = 1;
 	private int chromosomeLength = 10;
 	
 	//vals - array of chromosemes
@@ -52,7 +56,7 @@ public class SUS {
 		
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Function func = new Deba1();
 		SUS fs = new SUS();
 		
@@ -60,11 +64,17 @@ public class SUS {
 		String[][] encPop = gen.generatePopulation(fs.populationSize, fs.dimension, fs.chromosomeLength);
 		
 		ArrayList<PopulationItem> res = fs.calculateFirstStage(func, encPop);
-		
+
 		for(PopulationItem p : res) {
 			System.out.println(p);
 			System.out.println();
 		}
+
+		ArrayList<ArrayList<PopulationItem>> stages = new ArrayList<ArrayList<PopulationItem>>();
+		stages.add(res);
+
+		ExecutionResultSaver saver = new ExecutionResultSaver("execution_results");
+		saver.save(stages);
 		
 	}
 
