@@ -13,7 +13,7 @@ import functions.Function;
 
 public class SUS {
 
-    private int populationSize = 200;
+    private int populationSize = 500;
     private int dimension = 1;
     private int chromosomeLength = 10;
 
@@ -104,6 +104,7 @@ public class SUS {
     public static void main(String[] args) throws IOException {
         Function func = new Deba1();
         SUS fs = new SUS();
+        final int NUMBER_OF_STEPS = 31;
 
         ChromosomeGenerator gen = new ChromosomeGenerator();
         String[][] encPop = gen.generatePopulation(fs.populationSize, fs.dimension, fs.chromosomeLength);
@@ -115,15 +116,13 @@ public class SUS {
             System.out.println();
         }
 
-
         ArrayList<ArrayList<PopulationItem>> stages = new ArrayList<ArrayList<PopulationItem>>();
 		stages.add(firstPopulation);
 
-		for (int i = 1; i < 31; i++) {
-			ArrayList<PopulationItem> next = fs.select(stages.get(i - 1), true, 200);
+		for (int i = 1; i < NUMBER_OF_STEPS; i++) {
+			ArrayList<PopulationItem> next = fs.select(stages.get(i - 1), true, fs.populationSize);
 			stages.add(next);
 		}
-
 
 		ExecutionResultSaver saver = new ExecutionResultSaver("execution_results");
 		saver.save(stages);
