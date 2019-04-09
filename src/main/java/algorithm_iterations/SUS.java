@@ -1,17 +1,16 @@
 package algorithm_iterations;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jenetics.Optimize;
 import other.ChromosomeDecoder;
 import other.ChromosomeGenerator;
 import other.ExecutionResultSaver;
 import other.PopulationItem;
 import functions.Deba1;
 import functions.Function;
-import functions.TestFunction;
 
 public class SUS {
 	
@@ -55,6 +54,60 @@ public class SUS {
 		return population;
 		
 	}
+
+	public ArrayList<PopulationItem> select(
+			ArrayList<PopulationItem> population,
+			boolean naturalFitnessScores,
+			int selectionSize
+	) {
+		Random rng = new Random();
+		// Calculate the sum of all fitness values.
+		double aggregateFitness = 0;
+		for (PopulationItem candidate: population)
+		{
+			aggregateFitness += getAdjustedFitness(candidate.getFitness(),
+					naturalFitnessScores);
+		}
+
+		ArrayList<PopulationItem> selection = new ArrayList<PopulationItem>(selectionSize);
+		// Pick a random offset between 0 and 1 as the starting point for selection.
+		double startOffset = rng.nextDouble();
+		double cumulativeExpectation = 0;
+		int index = 0;
+		for (PopulationItem candidate : population)
+		{
+			// Calculate the number of times this candidate is expected to
+			// be selected on average and add it to the cumulative total
+			// of expected frequencies.
+			cumulativeExpectation += getAdjustedFitness(candidate.getFitness(),
+					naturalFitnessScores) / aggregateFitness * selectionSize;
+
+			// If f is the expected frequency, the candidate will be selected at
+			// least as often as floor(f) and at most as often as ceil(f). The
+			// actual count depends on the random starting offset.
+			while (cumulativeExpectation > startOffset + index)
+			{
+				selection.add(candidate);
+				index++;
+			}
+		}
+		return selection;
+	}
+
+	private double getAdjustedFitness(double rawFitness, boolean naturalFitness)
+	{
+		if (naturalFitness)
+		{
+			return rawFitness;
+		}
+		else
+		{
+			// If standardised fitness is zero we have found the best possible
+			// solution.  The evolutionary algorithm should not be continuing
+			// after finding it.
+			return rawFitness == 0 ? Double.POSITIVE_INFINITY : 1 / rawFitness;
+		}
+	}
 	
 	public static void main(String[] args) throws IOException {
 		Function func = new Deba1();
@@ -63,15 +116,21 @@ public class SUS {
 		ChromosomeGenerator gen = new ChromosomeGenerator();
 		String[][] encPop = gen.generatePopulation(fs.populationSize, fs.dimension, fs.chromosomeLength);
 		
-		ArrayList<PopulationItem> res = fs.calculateFirstStage(func, encPop);
+		ArrayList<PopulationItem> firstPopulation = fs.calculateFirstStage(func, encPop);
 
-		for(PopulationItem p : res) {
+		for(PopulationItem p : firstPopulation) {
 			System.out.println(p);
 			System.out.println();
 		}
 
 		ArrayList<ArrayList<PopulationItem>> stages = new ArrayList<ArrayList<PopulationItem>>();
-		stages.add(res);
+		stages.add(firstPopulation);
+
+		for (int i = 0; i < 10; i++) {
+			ArrayList<PopulationItem> next = fs.select(firstPopulation, true, 500);
+			stages.add(next);
+		}
+
 
 		ExecutionResultSaver saver = new ExecutionResultSaver("execution_results");
 		saver.save(stages);
