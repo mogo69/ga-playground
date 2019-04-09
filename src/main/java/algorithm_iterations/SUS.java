@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import io.jenetics.Optimize;
 import other.ChromosomeDecoder;
 import other.ChromosomeGenerator;
 import other.ExecutionResultSaver;
