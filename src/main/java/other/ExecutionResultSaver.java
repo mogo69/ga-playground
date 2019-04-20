@@ -24,7 +24,7 @@ public class ExecutionResultSaver {
     public void save(ArrayList<ArrayList<PopulationItem>> stages) throws IOException {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss");
+        DateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
         String executionDateString = dateFormat.format(date);
         String executionDatetimeString = datetimeFormat.format(date);
         String dirPath = this.resultsDir + File.separator + executionDateString;
