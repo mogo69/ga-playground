@@ -13,13 +13,14 @@ import functions.Function;
 
 public class SUS {
 
-    private int populationSize = 500;
-    private int dimension = 1;
+    private int populationSize = 5;
+    private int dimension = 3;
     private int chromosomeLength = 10;
 
     //vals - array of chromosemes
     //chromosome - array of x values for function (depends on dimension)
     public ArrayList<PopulationItem> calculateFirstStage(Function func, String[][] svals) {
+    	
         ChromosomeDecoder decod = new ChromosomeDecoder();
         double[][] decPop = decod.decodePopulation(svals, func.getStartValue(), func.getEndValue(), chromosomeLength);
 
@@ -106,17 +107,26 @@ public class SUS {
         SUS fs = new SUS();
         final int NUMBER_OF_STEPS = 31;
 
+        //Population generation + calculating fitness + selecting candidates to parents pool
         ChromosomeGenerator gen = new ChromosomeGenerator();
         String[][] encPop = gen.generatePopulation(fs.populationSize, fs.dimension, fs.chromosomeLength);
 
         ArrayList<PopulationItem> firstPopulation = fs.calculateFirstStage(func, encPop);
-
+        
+        
+        System.out.println("generation 1");
+        System.out.println();
         for (PopulationItem p : firstPopulation) {
             System.out.println(p);
             System.out.println();
         }
-
-        ArrayList<ArrayList<PopulationItem>> stages = new ArrayList<ArrayList<PopulationItem>>();
+        
+        System.out.println();
+        System.out.println("***************");
+        System.out.println();
+        
+        //Saving results for drawing
+        /*ArrayList<ArrayList<PopulationItem>> stages = new ArrayList<ArrayList<PopulationItem>>();
 		stages.add(firstPopulation);
 
 		for (int i = 1; i < NUMBER_OF_STEPS; i++) {
@@ -125,7 +135,21 @@ public class SUS {
 		}
 
 		ExecutionResultSaver saver = new ExecutionResultSaver("execution_results");
-		saver.save(stages);
+		saver.save(stages);*/
+        
+        //Crossover testing
+        Crossover cross = new Crossover();
+        ArrayList<PopulationItem> parentsPool = cross.selectIndividualsForCrossover(firstPopulation);
+        
+        String[][] crossoverRes = cross.doCrossover(parentsPool);
+        ArrayList<PopulationItem> secondPopulation = fs.calculateFirstStage(func, crossoverRes);
+
+        System.out.println("generation 2");
+        System.out.println();
+        for (PopulationItem p : secondPopulation) {
+            System.out.println(p);
+            System.out.println();
+        }
     }
 
 }

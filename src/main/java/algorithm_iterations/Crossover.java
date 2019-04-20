@@ -21,40 +21,35 @@ public class Crossover {
 		return res;
 	}
 	
-	public ArrayList<PopulationItem> doCrossover(ArrayList<PopulationItem> selectedItems) {
-		ArrayList<PopulationItem> res = new ArrayList<PopulationItem>();
+	public String[][] doCrossover(ArrayList<PopulationItem> selectedItems) {
+		ArrayList<String[]> res = new ArrayList<String[]>();
 		int size = selectedItems.size();
 		
 		Random rand = new Random();
-		int point = rand.nextInt();
+		int point = rand.nextInt(size-1);
+		point++;
 		
 		for(int i = 0, j = size / 2; j < size; i++, j++) {
-			res.add(getFirstCrossoverIndividual(selectedItems.get(i), selectedItems.get(j), point));
-			res.add(getSecondCrossoverIndividual(selectedItems.get(i), selectedItems.get(j), point));
+			res.add(getFirstChild(selectedItems.get(i).getGenothype(), selectedItems.get(j).getGenothype(), point));
+			res.add(getSecondChild(selectedItems.get(i).getGenothype(), selectedItems.get(j).getGenothype(), point));
 		}
 		
-		return res;
+		//Converting ArrayList into String[][]	
+		String[][] retRes = new String[res.size()][];
+		for (int i = 0; i < res.size(); i++) {
+		    String[] row = res.get(i);
+		    retRes[i] = row;
+		}
+		
+		return retRes;
 	}
 	
-	private PopulationItem getFirstCrossoverIndividual(PopulationItem item1, PopulationItem item2, int point) {
-		PopulationItem crossItem1 = new PopulationItem();
-		crossItem1.setGenothype(getFirstChild(item1.getGenothype(), item2.getGenothype(), point));
-		
-		return crossItem1;
-	}
-	
-	private PopulationItem getSecondCrossoverIndividual(PopulationItem item1, PopulationItem item2, int point) {
-		PopulationItem crossItem2 = new PopulationItem();
-		crossItem2.setGenothype(getSecondChild(item1.getGenothype(), item2.getGenothype(), point));
-		
-		return crossItem2;
-	}
 	
 	//First child - result of the crossover
 	private String[] getFirstChild(String[] gen1, String[] gen2, int point) {
 		String[] res = new String[gen1.length];
 		
-		for(int i = 0; i < point; i++) {
+		for(int i = 0; i < gen1.length; i++) {
 			res[i] = getFirstPartStr(gen1[i], gen2[i], point);
 		}
 		
@@ -72,7 +67,7 @@ public class Crossover {
 		return res;
 	}
 	
-	private String getFirstPartStr(String partGen1, String partGen2, int point) {
+	public String getFirstPartStr(String partGen1, String partGen2, int point) {
 		String res = "";
 		
 		for(int i = 0; i < point; i++) {
@@ -85,14 +80,14 @@ public class Crossover {
 		return res;
 	}
 	
-	private String getSecondPartStr(String partGen1, String partGen2, int point) {
+	public String getSecondPartStr(String partGen1, String partGen2, int point) {
 		String res = "";
 		
 		for(int i = 0; i < point; i++) {
 			res += partGen2.charAt(i);
 		}
 		for(int i = point; i < partGen1.length(); i++) {
-			res += partGen1.charAt(i);;
+			res += partGen1.charAt(i);
 		}
 		
 		return res;
