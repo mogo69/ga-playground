@@ -1,5 +1,8 @@
 package other;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PopulationItem implements Comparable<PopulationItem> {
 	
 	private String[] genothype; //encoded chromosome
@@ -48,26 +51,38 @@ public class PopulationItem implements Comparable<PopulationItem> {
 		this.realNumberOfItems = realNumberOfItems;
 	}
 
+	@JsonProperty("variables")
 	public String[] getGenothype() {
 		return genothype;
 	}
 
+	@JsonProperty("stringView")
+	public String getStringView() {
+		String stringView = String.join(",", genothype);
+		return stringView;
+	}
+
+	@JsonProperty("decodedParams")
 	public double[] getPhenotype() {
 		return phenotype;
 	}
 
+	@JsonProperty("health")
 	public double getFitness() {
 		return fitness;
 	}
 
+	@JsonIgnore
 	public double getProbability() {
 		return probability;
 	}
 
+	@JsonIgnore
 	public double getExpectedNumberOfItems() {
 		return expectedNumberOfItems;
 	}
 
+	@JsonIgnore
 	public double getRealNumberOfItems() {
 		return realNumberOfItems;
 	}
