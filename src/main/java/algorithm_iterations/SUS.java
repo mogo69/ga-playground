@@ -19,7 +19,7 @@ public class SUS {
 
     //vals - array of chromosemes
     //chromosome - array of x values for function (depends on dimension)
-    public ArrayList<PopulationItem> calculateFirstStage(Function func, String[][] svals) {
+    public ArrayList<PopulationItem> calculateParameters(Function func, String[][] svals) {
     	
         ChromosomeDecoder decod = new ChromosomeDecoder();
         double[][] decPop = decod.decodePopulation(svals, func.getStartValue(), func.getEndValue(), chromosomeLength);
@@ -111,7 +111,7 @@ public class SUS {
         ChromosomeGenerator gen = new ChromosomeGenerator();
         String[][] encPop = gen.generatePopulation(fs.populationSize, fs.dimension, fs.chromosomeLength);
 
-        ArrayList<PopulationItem> firstPopulation = fs.calculateFirstStage(func, encPop);
+        ArrayList<PopulationItem> firstPopulation = fs.calculateParameters(func, encPop);
         
         
         System.out.println("generation 1");
@@ -141,8 +141,8 @@ public class SUS {
         Crossover cross = new Crossover();
         ArrayList<PopulationItem> parentsPool = cross.selectIndividualsForCrossover(firstPopulation);
         
-        String[][] crossoverRes = cross.doCrossover(parentsPool);
-        ArrayList<PopulationItem> secondPopulation = fs.calculateFirstStage(func, crossoverRes);
+        String[][] crossoverRes = cross.doCrossover(parentsPool, 0.5);
+        ArrayList<PopulationItem> secondPopulation = fs.calculateParameters(func, crossoverRes);
 
         System.out.println("generation 2");
         System.out.println();

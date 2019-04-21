@@ -21,9 +21,9 @@ public class Crossover {
 		return res;
 	}
 	
-	public String[][] doCrossover(ArrayList<PopulationItem> selectedItems) {
+	public String[][] doCrossover(ArrayList<PopulationItem> selectedItems, double pm) {
 		ArrayList<String[]> res = new ArrayList<String[]>();
-		int size = selectedItems.size();
+		int size = (int) Math.round(selectedItems.size() * pm);
 		
 		Random rand = new Random();
 		int point = rand.nextInt(size-1);
