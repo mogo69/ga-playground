@@ -55,6 +55,40 @@ public class SUS {
 
     }
 
+    public static int hammingDist(String str1, String str2) {
+        int i = 0, count = 0;
+        while (i < str1.length())
+        {
+            if (str1.charAt(i) != str2.charAt(i))
+                count++;
+            i++;
+        }
+        return count;
+    }
+
+    /**
+     * Computes the shared fitness value for a solution
+     * @param index the index of the solution for which a shared fitness value will be computed
+     * @param minDist any solution closer than minDist will share fitness with the current solution
+     * @param shareParam a parameter that defines how much influence sharing has. Higher = more sharing.
+     * @param population the array of solutions. Each solution has a genotype and associated fitness value.
+     */
+    public static double computeSharedFitnessValue(int index, double minDist, double shareParam, ArrayList<PopulationItem> population){
+
+        double denominator = 1;
+
+        for(int j = 0; j < population.size(); j++){
+
+            final double dist = SUS.hammingDist(population.get(index).getStringView() ,population.get(j).getStringView());
+
+            if (dist < minDist){
+                denominator += (1-(dist/shareParam));
+            }
+        }
+
+        return population.get(index).getFitness()/denominator;
+    }
+
     public ArrayList<PopulationItem> select(
             ArrayList<PopulationItem> population,
             boolean naturalFitnessScores,
@@ -103,6 +137,11 @@ public class SUS {
     }
 
     public static void main(String[] args) throws IOException {
+        //SUS.generateChartJson();
+        SUS.test();
+    }
+
+    public static void generateChartJson() throws IOException {
         Function func = new Deba1();
         SUS fs = new SUS();
         final int NUMBER_OF_STEPS = 31;
@@ -112,21 +151,21 @@ public class SUS {
         String[][] encPop = gen.generatePopulation(fs.populationSize, fs.dimension, fs.chromosomeLength);
 
         ArrayList<PopulationItem> firstPopulation = fs.calculateParameters(func, encPop);
-        
-        
+
+
         System.out.println("generation 1");
         System.out.println();
         for (PopulationItem p : firstPopulation) {
             System.out.println(p);
             System.out.println();
         }
-        
+
         System.out.println();
         System.out.println("***************");
         System.out.println();
-        
+
         //Saving results for drawing
-        /*ArrayList<ArrayList<PopulationItem>> stages = new ArrayList<ArrayList<PopulationItem>>();
+        ArrayList<ArrayList<PopulationItem>> stages = new ArrayList<ArrayList<PopulationItem>>();
 		stages.add(firstPopulation);
 
 		for (int i = 1; i < NUMBER_OF_STEPS; i++) {
@@ -135,12 +174,40 @@ public class SUS {
 		}
 
 		ExecutionResultSaver saver = new ExecutionResultSaver("execution_results");
-		saver.save(stages);*/
-        
+		saver.save(stages);
+
+
+    }
+
+    public static void test() throws IOException {
+        Function func = new Deba1();
+        SUS fs = new SUS();
+
+        //Population generation + calculating fitness + selecting candidates to parents pool
+        ChromosomeGenerator gen = new ChromosomeGenerator();
+        String[][] encPop = gen.generatePopulation(fs.populationSize, fs.dimension, fs.chromosomeLength);
+
+        ArrayList<PopulationItem> firstPopulation = fs.calculateParameters(func, encPop);
+
+
+        System.out.println("generation 1");
+        System.out.println();
+        for (PopulationItem p : firstPopulation) {
+            System.out.println(p);
+            System.out.println();
+        }
+
+        System.out.println("SharedFitnessValue test:");
+        System.out.println(SUS.computeSharedFitnessValue(0, 2, 1, firstPopulation));
+
+        System.out.println();
+        System.out.println("***************");
+        System.out.println();
+
         //Crossover testing
         Crossover cross = new Crossover();
         ArrayList<PopulationItem> parentsPool = cross.selectIndividualsForCrossover(firstPopulation);
-        
+
         String[][] crossoverRes = cross.doCrossover(parentsPool, 0.5);
         ArrayList<PopulationItem> secondPopulation = fs.calculateParameters(func, crossoverRes);
 
@@ -151,5 +218,6 @@ public class SUS {
             System.out.println();
         }
     }
+
 
 }
