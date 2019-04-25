@@ -1,0 +1,23 @@
+{  
+   "evaluation":"Deba1TestFunction",
+   "dimension":1,
+   "run":0,
+   "selection":"SUSSelection",
+   "crossover":"OnePointCrossover",
+   "pc":0.0,
+   "mutation":"OnePointMutation",
+   "pm":0.01,
+   "distance":"EuclideanDistance",
+   "sigma":0.2,
+   "nfe":88500,
+   "nSeeds":5,
+   "np":5,
+   "gp":5,
+   "lp":0,
+   "pr":1.0,
+   "gpr":1.0,
+   "lpr":-1.0,
+   "fpr":0.0,
+   "lfp":-1.0,
+   "hfp":-1.0
+}

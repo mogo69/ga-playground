@@ -16,15 +16,17 @@ import java.util.Date;
 public class ExecutionResultSaver {
 
     private String resultsDir;
+    private String statisticResultsDir;
 
-    public ExecutionResultSaver(String resultsDir) {
+    public ExecutionResultSaver(String resultsDir, String statisticResultsDir) {
         this.resultsDir = resultsDir;
+        this.statisticResultsDir = statisticResultsDir;
     }
 
     public void save(ArrayList<ArrayList<PopulationItem>> stages) throws IOException {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
+        DateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss-SSS");
         String executionDateString = dateFormat.format(date);
         String executionDatetimeString = datetimeFormat.format(date);
         String dirPath = this.resultsDir + File.separator + executionDateString;
@@ -36,5 +38,22 @@ public class ExecutionResultSaver {
         dir.mkdirs();
 
         mapper.writeValue(file, stages);
+    }
+
+    public void saveStatisticItem(StatisticItem statisticItem) throws IOException {
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat datetimeFormat = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss-SSS");
+        String executionDateString = dateFormat.format(date);
+        String executionDatetimeString = datetimeFormat.format(date);
+        String dirPath = this.statisticResultsDir + File.separator + executionDateString;
+        String filePath = dirPath + File.separator + executionDatetimeString + ".json";
+
+        ObjectMapper mapper = new ObjectMapper(); // create once, reuse
+        File dir = new File(dirPath);
+        File file = new File(filePath);
+        dir.mkdirs();
+
+        mapper.writeValue(file, statisticItem);
     }
 }

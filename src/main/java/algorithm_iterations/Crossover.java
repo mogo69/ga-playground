@@ -21,12 +21,21 @@ public class Crossover {
 		return res;
 	}
 	
-	public String[][] doCrossover(ArrayList<PopulationItem> selectedItems, double pm) {
+	public String[][] doCrossover(ArrayList<PopulationItem> selectedItems, double pm, int chromosomeLength) {
+		for (PopulationItem populationItem: selectedItems) {
+			if( new Random().nextDouble() <= pm ) {  //you might want to cache the Random instance
+				//we hit the 1/25 ( 4% ) case.
+			} else {
+
+			}
+		}
+
+
 		ArrayList<String[]> res = new ArrayList<String[]>();
 		int size = (int) Math.round(selectedItems.size() * pm);
 		
 		Random rand = new Random();
-		int point = rand.nextInt(size-1);
+		int point = rand.nextInt(chromosomeLength-1);
 		point++;
 		
 		for(int i = 0, j = size / 2; j < size; i++, j++) {
@@ -74,7 +83,7 @@ public class Crossover {
 			res += partGen1.charAt(i);
 		}
 		for(int i = point; i < partGen2.length(); i++) {
-			res += partGen2.charAt(i);;
+			res += partGen2.charAt(i);
 		}
 		
 		return res;

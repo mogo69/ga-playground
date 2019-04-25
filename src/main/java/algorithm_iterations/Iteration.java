@@ -24,18 +24,18 @@ public class Iteration {
         String[][] encPop = gen.generatePopulation(populationSize, dimension, chromosomeLength);
         
         //Calculating fitness
-        SUS sus = new SUS();
-        ArrayList<PopulationItem> firstPopulation = sus.calculateParameters(func, encPop);
+        SUS sus = new SUS(1);
+        ArrayList<PopulationItem> firstPopulation = sus.calculateParameters(func, encPop, 1, 1, true);
         
         //Crossover
         Crossover cross = new Crossover();
         ArrayList<PopulationItem> parentsPool = cross.selectIndividualsForCrossover(firstPopulation);
-        String[][] crossoverRes = cross.doCrossover(parentsPool, pc);
-        ArrayList<PopulationItem> crossoveredPopulation = sus.calculateParameters(func, crossoverRes);
+        String[][] crossoverRes = cross.doCrossover(parentsPool, pc, 10); // todo fix 10
+        ArrayList<PopulationItem> crossoveredPopulation = sus.calculateParameters(func, crossoverRes, 1, 1, true);
         
         Mutation mut = new Mutation();
         String[][] mutationRes = mut.doMutation(crossoveredPopulation, pc);
-        ArrayList<PopulationItem> mutatedPopulation = sus.calculateParameters(func, crossoverRes);
+        ArrayList<PopulationItem> mutatedPopulation = sus.calculateParameters(func, crossoverRes, 1, 1, true);
     }
 
 }
