@@ -2,6 +2,7 @@ package algorithm_iterations;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Random;
 
 import other.*;
@@ -10,12 +11,13 @@ import functions.Function;
 
 public class SUS {
 
-    public int populationSize = 500;
+    public int populationSize;
     public int dimension;
     public int chromosomeLength = 10;
 
-    public SUS(int dimension) {
+    public SUS(int dimension, int populationSize) {
         this.dimension = dimension;
+        this.populationSize = populationSize;
     }
 
     //vals - array of chromosemes
@@ -162,6 +164,12 @@ public class SUS {
 
     public ArrayList<PopulationItem> findSeeds(ArrayList<PopulationItem> stage) {
         ArrayList<PopulationItem> seeds = new ArrayList<PopulationItem>();
+        seeds.sort(new Comparator<PopulationItem>() {
+            public int compare(PopulationItem o1, PopulationItem o2) {
+                return new Double(o2.getFitness()).compareTo(o1.getFitness());
+            }
+        });
+
 
         for (PopulationItem item: stage) {
             if (this.isPeakCandidate(seeds, item)) {
@@ -189,7 +197,8 @@ public class SUS {
             double pc,
             double pm
     ) throws IOException {
-        SUS fs = new SUS(dimension);
+        int populationSize = dimension < 4 ? 500 : 5000;
+        SUS fs = new SUS(dimension, populationSize);
         final int NUMBER_OF_STEPS = 1000000;
         int fitnessCalculationCount = 0;
 
@@ -223,7 +232,7 @@ public class SUS {
             double avgFitness = SUS.computeAvgPopulationFitness(parentsPool);
             stagesAvgFitness.add(avgFitness);
 
-            if (fitnessCalculationCount > 2000000) break;
+            if (fitnessCalculationCount > 20000000) break;
             if (stages.size() > 11 && stagesAvgFitness.get(stages.size() - 2) - stagesAvgFitness.get(stages.size() - 3) < 0.0001 ) break;
 		}
 
@@ -234,10 +243,21 @@ public class SUS {
             stagesSeeds.add(fs.findSeeds(stage));
         }
         ArrayList<PopulationItem> lastPopulation = stagesSeeds.get(stagesSeeds.size() - 2);
+        ExecutionResultSaver saver = new ExecutionResultSaver("execution_results", "execution_stats_results");
+        if (dimension == 1) {
 
-
-		ExecutionResultSaver saver = new ExecutionResultSaver("execution_results", "execution_stats_results");
-		saver.save(stagesSeeds);
+            saver.save(
+                    stagesSeeds,
+                    dimension,
+                    run,
+                    func,
+                    fitnessSharingMinDistance,
+                    fitnessSharingShareParam,
+                    useHammingDist,
+                    pc,
+                    pm
+            );
+        }
 
         StatisticItem statisticItem = new StatisticItem();
         statisticItem.setEvaluation(func.getName());
@@ -258,9 +278,9 @@ public class SUS {
         double gp = func.countGlobalPeaksIn(lastPopulation);
         double lp = func.countLocalPeaksIn(lastPopulation);
         double np = gp + lp;
-        double pr = np / func.getGlobalPeaks().length + func.getLocalPeaks().length;
-        double gpr = gp / func.getGlobalPeaks().length;
-        double lpr = lp / func.getLocalPeaks().length;
+        double pr = np / (func.getNumberOfGlobalPeaks(dimension) + func.getNumberOfLocalPeaks(dimension));
+        double gpr = gp / func.getNumberOfGlobalPeaks(dimension);
+        double lpr = lp / func.getNumberOfLocalPeaks(dimension);
         double fpr =  (nSeeds - np) / nSeeds;
 
         statisticItem.setNp(np);
@@ -273,7 +293,17 @@ public class SUS {
         statisticItem.setLfp(-1);
         statisticItem.setHfp(-1);
 
-        saver.saveStatisticItem(statisticItem);
+        saver.saveStatisticItem(
+                statisticItem,
+                dimension,
+                run,
+                func,
+                fitnessSharingMinDistance,
+                fitnessSharingShareParam,
+                useHammingDist,
+                pc,
+                pm
+        );
     }
 
     public static double computeAvgPopulationFitness(ArrayList<PopulationItem> population) {

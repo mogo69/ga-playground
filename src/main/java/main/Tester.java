@@ -23,7 +23,7 @@ public class Tester {
 
     public static void test() throws IOException {
         Function func = new Deba1();
-        SUS fs = new SUS(1);
+        SUS fs = new SUS(1, 500);
 
         //Population generation + calculating fitness + selecting candidates to parents pool
         ChromosomeGenerator gen = new ChromosomeGenerator();

@@ -24,7 +24,7 @@ public class Iteration {
         String[][] encPop = gen.generatePopulation(populationSize, dimension, chromosomeLength);
         
         //Calculating fitness
-        SUS sus = new SUS(1);
+        SUS sus = new SUS(1, 500);
         ArrayList<PopulationItem> firstPopulation = sus.calculateParameters(func, encPop, 1, 1, true);
         
         //Crossover

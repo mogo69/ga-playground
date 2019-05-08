@@ -14,6 +14,15 @@ public abstract class Function {
 	abstract public double[] getGlobalPeaks();
 	abstract public double[] getLocalPeaks();
 
+	public int getNumberOfGlobalPeaks(double dimension) {
+		return (int) Math.pow((double) this.getGlobalPeaks().length, dimension);
+	}
+
+	public int getNumberOfLocalPeaks(double dimension) {
+		return (int) Math.pow((double) this.getLocalPeaks().length, dimension);
+	}
+
+
 	public int countAllPeaksIn(ArrayList<PopulationItem> population) {
 		return this.countGlobalPeaksIn(population) + this.countLocalPeaksIn(population);
 	}
@@ -26,7 +35,7 @@ public abstract class Function {
 			outer: for (int i = 0; i < phenotype.length; i++) {
 
 				for (int j = 0; j < this.getGlobalPeaks().length; j++) {
-					if (Math.abs(phenotype[i] - this.getGlobalPeaks()[j]) < 0.03) {
+					if (Math.abs(phenotype[i] - this.getGlobalPeaks()[j]) < 0.01) {
 						count++;
 						break outer;
 					}
@@ -43,7 +52,7 @@ public abstract class Function {
 			double [] phenotype = item.getPhenotype();
 			outer: for (int i = 0; i < phenotype.length; i++) {
 				for (int j = 0; j < this.getLocalPeaks().length; j++) {
-					if (Math.abs(phenotype[i] - this.getLocalPeaks()[j]) < 0.03) {
+					if (Math.abs(phenotype[i] - this.getLocalPeaks()[j]) < 0.01) {
 						count++;
 						break outer;
 					}
